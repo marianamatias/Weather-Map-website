@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<!-- http://homes.lmc.gatech.edu/~mmj6/ -->
+<!-- Each version/refresh of this page gives a new US city, a picture of the landscape or skyline in that area,
+and a description of the local weather and temperature there. It's nice for finding different places to travel to. -->
+<html>
+  <head>
+    <link href="https://fonts.googleapis.com/css?family=Ubuntu" rel="stylesheet">
+    <title>Project 4</title>
+
+    <style>
+        body {
+          color: white;
+          text-align: center;
+          background: white;
+          font-family: 'Ubuntu', sans-serif;
+        }
+
+        #CityContainer {
+          color: white;
+          text-align: center;
+          background: #70a1c9;
+          background: linear-gradient(to bottom right, #63b3cc, #3a4cc1);
+          font-family: 'Ubuntu', sans-serif;
+        }
+
+        h1 {
+          font-size: 70pt;
+          text-shadow: 0 -1px 0 #fff, 0 1px 0 #2e2e2e, 0 2px 0 #2c2c2c, 0 3px 0 #2a2a2a, 0 4px 0 #282828, 0 5px 0 #262626, 0 6px 0 #242424, 0 7px 0 #222, 0 8px 0 #202020, 0 9px 0 #1e1e1e, 0 10px 0 #1c1c1c, 0 11px 0 #1a1a1a, 0 12px 0 #181818, 0 13px 0 #161616, 0 14px 0 #141414, 0 15px 0 #121212, 0 22px 30px rgba(0, 0, 0, 0.9);
+        }
+
+        h4 {
+          font-size: 14pt;
+        }
+
+        #MapContainer {
+          padding-top: 15pt;
+          background: #ebf12f;
+          background: linear-gradient(to bottom right, #ebf12f, #f06c2e);
+          padding-bottom: 100pt;
+          margin: 0px;
+        }
+
+        #LocationName
+        {
+          color: white;
+          font-weight: bold;
+          font-size: 100pt;
+          padding-top: 100px;
+          padding-bottom: 100px;
+          height: 150px;
+          letter-spacing: .1em;
+          text-shadow: 0 -1px 0 #fff, 0 1px 0 #2e2e2e, 0 2px 0 #2c2c2c, 0 3px 0 #2a2a2a, 0 4px 0 #282828, 0 5px 0 #262626, 0 6px 0 #242424, 0 7px 0 #222, 0 8px 0 #202020, 0 9px 0 #1e1e1e, 0 10px 0 #1c1c1c, 0 11px 0 #1a1a1a, 0 12px 0 #181818, 0 13px 0 #161616, 0 14px 0 #141414, 0 15px 0 #121212, 0 22px 30px rgba(0, 0, 0, 0.9);
+        }
+
+        #image
+        {
+          display: block;
+          margin-left: auto;
+          margin-right: auto;
+          width: 40%;
+          padding-bottom: 100pt;
+        }
+
+        #cloudy
+        {
+          padding-top: 20px;
+          padding-bottom: 10pt;
+          font-size: 50pt;
+          text-align: center;
+          text-shadow: 3px 3px 5px #2e2e2e;
+        }
+
+        #hiLow
+        {
+          color: white;
+          font: helvetica;
+          font-size: 35pt;
+          text-align: center;
+          height: 100px;
+          text-shadow: 3px 3px 5px #2e2e2e;
+        }
+
+        #fullforecast {
+          color: white;
+          font: helvetica;
+          font-size: 35pt;
+          text-align: center;
+          height: 100px;
+          padding-bottom: 100px;
+        }
+
+        a.class1:link, a.class1:visited {
+            background-color: #fc5935;
+            color: white;
+            padding: 15px 25px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            transition-duration: 0.5s;
+        }
+
+        a.class1:hover, a.class1:active {
+            box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24),0 17px 50px 0 		rgba(0,0,0,0.19);
+        }
+
+        a.class1 {
+          border-radius: 10px;
+          font-size: 20pt;
+          text-align: center;
+        }
+
+        a.bio {
+          font-weight: bold;
+          color: #fc5935;
+        }
+
+        a.bio:visited {
+          color: #fc5935;
+        }
+
+        #map {
+          border: 10px solid white;
+          padding: 50px;
+          height: 500px;
+          width: 500px;
+          display: block;
+          margin-left: auto;
+          margin-right: auto;
+        }
+    </style>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+    <script>
+      var GoogleAPIKey = "AIzaSyBKXWZ-KaY1fgQnTDRfq5TYBr9IVcTJsVQ";
+      var FlickrAPIKey = '96307b1ce8a02d53703e01dc7ce50d38';
+      var WeatherAPIKey = '3ff9337e04812e50';
+      // var latcoor;
+      // var longcoor;
+
+      function randInt(alist) {
+        return Math.floor(Math.random() * (alist).length);
+      }
+
+      Array.prototype.pick = function() {
+      return this[Math.floor(Math.random()*this.length)];
+      }
+
+      var cities = ['Montgomery', 'Juneau', 'Phoenix', 'Little_Rock', 'Sacramento', 'Denver', 'Hartford', 'Dover', 'Tallahassee', 'Atlanta',
+      'Honolulu', 'Boise', 'Springfield', 'Indianapolis', 'Des_Moines', 'Topeka', 'Frankfort', 'Baton_Rouge', 'Augusta', 'Annapolis',
+      'Boston', 'Lansing', 'Saint_Paul', 'Jackson', 'Jefferson_City', 'Helena', 'Lincoln', 'Carson_City', 'Concord', 'Trenton', 'Santa_Fa',
+      'Albany', 'Raleigh', 'Bismarck', 'Columbus', 'Oklama_City', 'Salem', 'Harrisburg', 'Providence', 'Columbia', 'Pierre',
+      'Nashville', 'Austin', 'Salt_Lake_City', 'Montpelier', 'Richmond', 'Olympia', 'Charleston', 'Madison', 'Cheyenne'];
+
+      var states = ['AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA', 'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA',
+      'ME', 'MD', 'MA', 'MI', 'MN', 'MS', 'MO', 'MT', 'NE', 'NV', 'NH', 'NJ', 'NM', 'NY', 'NC', 'ND', 'OH', 'OK', 'OR', 'PA',
+      'RI', 'SC', 'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'WA', 'WV', 'WI', 'WY'];
+
+      var lats = [32.3668, 58.3019, 33.4484, 34.7465, 38.5816, 39.7392, 41.7637, 39.1582, 30.4383, 33.7490,
+      21.3069, 43.6187, 39.7817, 39.7684, 41.6005, 39.0558, 38.2009, 30.4583, 44.3106, 38.9784,
+      42.3601, 42.7325, 44.9537, 32.2988, 38.5767, 46.5884, 40.8258, 39.1638, 43.2081, 40.2171, 35.6870,
+      42.6526, 35.7796, 46.8083, 39.9612, 35.4676, 44.9429, 40.2732, 41.8240, 34.0007, 44.3683,
+      36.1627, 30.2672, 40.7608, 44.2601, 37.5407, 47.0379, 38.3498, 43.0731, 41.1400];
+
+      var longs = [-86.3000, -134.4197, -112.0740, -92.2896, -121.4944, -104.9903, -72.6851, -75.5244, -84.2807, -84.3880,
+      -157.8583, -116.2146, -89.6501, -86.1581, -93.6091, -95.6890, -84.8733, -91.1403, -69.7795, -76.4922,
+      -71.0589, -84.5555, -93.0900, -90.1848, -92.1735, -112.0245, -96.6852, -119.7674, -71.5376, -74.7429, -105.9378,
+      -73.7562, -78.6382, -100.7837, -82.9988, -97.5164, -123.0351, -76.8867, -71.4128, -81.0348, -100.3510,
+      -86.7816, -97.7431, -111.8910, -72.5754, -77.4360, -122.9007, -81.6326, -89.4012, -104.8202];
+
+      var int1 = randInt(cities);
+
+
+      //IMAGE
+      $.ajax({
+        url: 'https://api.flickr.com/services/rest/?method=flickr.photos.search&text=skyline+' + cities[int1] + '&format=json&nojsoncallback=1&api_key=' + FlickrAPIKey,
+        success: function(data) {
+          console.log("	got images");
+          // assemble Flickr image URL (as per https://www.flickr.com/services/api/misc.urls.html)
+          var photo = data.photos.photo.pick();
+          var imgUrl = "https://farm" + photo.farm + ".staticflickr.com/" + photo.server + "/" + photo.id + "_" + photo.secret + "_d.jpg";
+          console.log(imgUrl);
+
+          $('#image').html('');
+          $('#image').append('<img src=' + imgUrl + ' border=10px/>');
+        },
+        async: true,
+        dataType:"json"
+		  });
+
+      // http://api.wunderground.com/api/3ff9337e04812e50/conditions/q/CA/San_Francisco.json
+      //Weather
+      $.ajax({
+        url: 'http://api.wunderground.com/api/3ff9337e04812e50/conditions/q/' + states[int1] +'/' + cities[int1] + '.json',
+        success: function(data) {
+
+          // latcoor = data.current_observation.display_location.latitude;
+          // longcoor = data.current_observation.display_location.longitude;
+          // // console.log("	lat and long");
+          // var wlogo = data.current_observation.image.url;
+          // console.log(wlogo);
+          // console.log("	got weather logo");
+          // $('#wlogo').html('');
+          // $('#wlogo').append('<img src=' + wlogo + '/>');
+
+          var hiLow = data.current_observation.temperature_string;
+          console.log(hiLow);
+          console.log("	got HiLow");
+          $('#hiLow').html('');
+          $('#hiLow').append(hiLow);
+
+          var locationName = data.current_observation.display_location.full;
+          console.log(locationName);
+          console.log("	got Location Name");
+          $('#LocationName').html('');
+          $('#LocationName').append(locationName);
+
+          var cloudy = data.current_observation.weather;
+          console.log(cloudy);
+          console.log("	got weather(cloudy)");
+          $('#cloudy').html('');
+          $('#cloudy').append(cloudy);
+
+          var fullForecast = data.current_observation.forecast_url;
+          console.log(fullForecast);
+
+          console.log("	got forecast link");
+          $('#fullforecast').html('');
+          $('#fullforecast').append('<a href="' + fullForecast + '" class="class1">Look at the full forecast here!</a>');
+        },
+        async: true,
+        dataType:"json"
+		  });
+
+      function initMap() {
+        // var uluru = {lat: parseFloat(latcoor), lng: parseFloat(longcoor)};
+        var uluru = {lat: lats[int1], lng: longs[int1]};
+        var map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 9,
+          center: uluru
+        });
+        var marker = new google.maps.Marker({
+          position: uluru,
+          map: map
+        });
+      }
+    </script>
+
+    <script async defer
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBKXWZ-KaY1fgQnTDRfq5TYBr9IVcTJsVQ&callback=initMap">
+    </script>
+
+  </head>
+  <body>
+    <div id="CityContainer">
+      <div id="LocationName"></div>
+      <div id="image"></div>
+
+      <h1>Weather</h1>
+      <div id="cloudy"></div>
+      <div id="hiLow"></div>
+      <div id="fullforecast" style="text-align:center"></div>
+    </div>
+
+    <div id="MapContainer">
+      <h1>Map</h1>
+      <div id="map"></div>
+    </div>
+
+    <footer></footer>><p style="color: #2e2e2e;">Created by: <a href = "https://www.linkedin.com/in/matiasmariana/" class="bio">Mariana Matias</a></p></footer>
+  </body>
+</html>
